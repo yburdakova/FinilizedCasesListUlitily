@@ -46,7 +46,9 @@ export function exportToCSV(data, outputDir, caseTypeId) {
       ).join('\n');
     const csvContent = csvHeader + csvRows;
   
-    const outputPath = path.join(outputDir, '_FinilizedCasesList.csv');
+    const folderName = path.basename(outputDir).replace(/[^a-zA-Z0-9_-]/g, '_');
+    const outputFileName = `_FinilizedCasesList_${folderName}.csv`;
+    const outputPath = path.join(outputDir, outputFileName);
     fs.writeFileSync(outputPath, csvContent, 'utf-8');
   
     return outputPath;
