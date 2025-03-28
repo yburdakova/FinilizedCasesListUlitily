@@ -2,13 +2,14 @@ const selectFolderBtn = document.getElementById('select-folder');
 const statusText = document.getElementById('statusText');
 
 selectFolderBtn.addEventListener('click', async () => {
-  statusText.textContent = 'Opening folder dialog...';
+  statusText.textContent = 'Processing...';
 
-  const folderPath = await window.electronAPI.selectFolder();
+  const resultPath = await window.electronAPI.selectFolder();
 
-  if (folderPath) {
-    statusText.textContent = `Selected folder: ${folderPath}`;
+  if (resultPath) {
+    statusText.textContent = `CSV saved to: ${resultPath}`;
   } else {
-    statusText.textContent = 'Folder selection was cancelled.';
+    statusText.textContent = 'Operation cancelled.';
   }
 });
+
