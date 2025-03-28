@@ -1,0 +1,39 @@
+import fs from 'fs';
+import path from 'path';
+
+
+function extractBoxId(folderName) {
+  const match = folderName.match(/^Box(\d+)\./);
+  return match ? match[1] : null;
+}
+
+
+export async function scanAndCollectCases(rootFolderPath) {
+  const results = [];
+
+  const boxFolders = fs.readdirSync(rootFolderPath).filter(name =>
+    fs.statSync(path.join(rootFolderPath, name)).isDirectory() &&
+    name.startsWith('Box')
+  );
+
+  for (const boxFolderName of boxFolders) {
+    const boxId = extractBoxId(boxFolderName);
+    if (!boxId) continue;
+
+    const finalizedPath = path.join(rootFolderPath, boxFolderName, '2 Finalized');
+
+    if (!fs.existsSync(finalizedPath)) continue;
+
+    const caseFolders = fs.readdirSync(finalizedPath).filter(name =>
+      fs.statSync(path.join(finalizedPath, name)).isDirectory()
+    );
+
+    for (let caseName of caseFolders) {
+      if (caseName.includes('-C')) continue;
+      caseName = caseName.replace(/-2$/, '');
+      results.push({ boxId, caseNumber: caseName });
+    }
+  }
+
+  return results;
+}
