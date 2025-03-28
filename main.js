@@ -38,7 +38,11 @@ ipcMain.handle('dialog:selectFolder', async () => {
 
   const folderPath = result.filePaths[0];
   const caseData = await scanAndCollectCases(folderPath);
-  const csvPath = exportToCSV(caseData, folderPath);
+  const folderName = path.basename(folderPath);
+  const firstWord = folderName.split(' ')[0].toLowerCase();
+  const caseTypeId = firstWord === 'criminal' ? 1 : 2;
+
+  const csvPath = exportToCSV(caseData, folderPath, caseTypeId);
 
   return csvPath;
 });

@@ -39,13 +39,15 @@ export async function scanAndCollectCases(rootFolderPath) {
   return results;
 }
 
-export function exportToCSV(data, outputDir) {
-    const csvHeader = 'BoxID,CaseNumber\n';
-    const csvRows = data.map(item => `${item.boxId},${item.caseNumber}`).join('\n');
+export function exportToCSV(data, outputDir, caseTypeId) {
+    const csvHeader = 'BoxID,CaseNumber,CaseTypeID\n';
+    const csvRows = data.map(item =>
+        `${item.boxId},${item.caseNumber},${caseTypeId}`
+    ).join('\n');
     const csvContent = csvHeader + csvRows;
-  
+
     const outputPath = path.join(outputDir, '_FinilizedCasesList.csv');
     fs.writeFileSync(outputPath, csvContent, 'utf-8');
-  
+
     return outputPath;
-  }
+}
