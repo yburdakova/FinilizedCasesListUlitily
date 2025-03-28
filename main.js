@@ -1,6 +1,8 @@
 import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import path, { join } from 'path';
 import { fileURLToPath } from 'url';
+import { scanAndCollectCases, exportToCSV } from './scanAndExport.js';
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,16 +28,21 @@ app.whenReady().then(() => {
 });
 
 ipcMain.handle('dialog:selectFolder', async () => {
-    const result = await dialog.showOpenDialog({
-      properties: ['openDirectory']
-    });
-  
-    if (result.canceled || result.filePaths.length === 0) {
-      return null;
-    }
-  
-    return result.filePaths[0];
+  const result = await dialog.showOpenDialog({
+    properties: ['openDirectory']
   });
+
+  if (result.canceled || result.filePaths.length === 0) {
+    return null;
+  }
+
+  const folderPath = result.filePaths[0];
+  const caseData = await scanAndCollectCases(folderPath);
+  const csvPath = exportToCSV(caseData, folderPath);
+
+  return csvPath;
+});
+
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
