@@ -40,14 +40,14 @@ export async function scanAndCollectCases(rootFolderPath) {
 }
 
 export function exportToCSV(data, outputDir, caseTypeId) {
-    const csvHeader = 'BoxID,CaseNumber,CaseTypeID\n';
+    const csvHeader = 'BoxID,CaseNumber,CaseTypeID,Uploaded,Converted\n';
     const csvRows = data.map(item =>
-        `${item.boxId},${item.caseNumber},${caseTypeId}`
+      `${item.boxId},${item.caseNumber},${caseTypeId},0,0`
     ).join('\n');
     const csvContent = csvHeader + csvRows;
-
+  
     const outputPath = path.join(outputDir, '_FinilizedCasesList.csv');
     fs.writeFileSync(outputPath, csvContent, 'utf-8');
-
+  
     return outputPath;
-}
+  }
